@@ -1,17 +1,34 @@
+import _ from 'lodash';
+import glob from 'glob';
 import path from 'path';
 
-// compile
+// configuration
 const defaultOptions = {
-  js: 'bundle',
-  css: 'styles',
-  html: 'index',
-  includeMap: true,
+  root: '/',
+  html: '/index.html',
 };
 
-const compileConfiguration = (options = defaultOptions, bitsConfig) => {
+const compileConfiguration = (options = {}, bitsConfig) => {
   return {
+    ...defaultOptions,
     ...options,
     ...bitsConfig,
+  };
+};
+
+// routes
+const defineRoute = (configPath, filePath) => {
+  // use this rather than base name so we can keep the folder structure in place
+  const relativePath = filePath.replace(configPath, '');
+
+  return {
+    verb: 'get',
+    route: relativePath,
+    implementation: {
+      get: (req, res) => {
+        res.status(200).sendFile(filePath);
+      }
+    }
   };
 };
 
@@ -19,27 +36,20 @@ export default (options) => {
   return {
     loadRoutes: (bitsConfig) => {
       const config = compileConfiguration(options, bitsConfig);
-      const routes = [];
 
-      const addRoute = (route, file) => {
-        routes.push({
-          verb: 'GET',
-          route,
-          implementation: (req, res) => {
-            res.status(200).sendFile(path.join(config.path, file));
-          }
-        });
-      };
+      // map all the files in the directory
+      const files = glob.sync(path.join(config.path, '**/*.*'));
+      const routes = files.map((filePath) => defineRoute(config.path, filePath));
 
-      // add routes
-      addRoute(`${config.root}`, `${config.index}.html`);
-      addRoute(`${config.root}${config.js}.js`, `${config.js}.js`);
-      addRoute(`${config.root}${config.css}.css`, `${config.css}.css`);
+      // map the index route
+      const index = _.find(routes, r => r.route === config.html);
+      routes.push({
+        ...index,
+        route: config.root,
+      });
 
-      if (config.includeMap) {
-        addRoute(`${config.js}.js.map`, `${config.js}.js.map`);
-        addRoute(`${config.css}.css.map`, `${config.css}.css.map`);
-      }
+      // return
+      return routes;
     }
   };
 };

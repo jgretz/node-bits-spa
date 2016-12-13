@@ -1,6 +1,6 @@
 {
   "name": "node-bits-spa",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Provides an logic to expose a single page app",
   "main": "lib/index.js",
   "scripts": {
@@ -19,6 +19,8 @@
   },
   "homepage": "https://github.com/jgretz/node-bits-spa#readme",
   "dependencies": {
+    "glob": "^7.0.6",
+    "lodash": "^4.17.2"
   },
   "devDependencies": {
     "babel-cli": "^6.10.1",
