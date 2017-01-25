@@ -1,6 +1,6 @@
 {
   "name": "node-bits-spa",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Provides an logic to expose a single page app",
   "main": "lib/index.js",
   "scripts": {
