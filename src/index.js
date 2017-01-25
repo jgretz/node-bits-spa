@@ -41,7 +41,7 @@ export default (options) => {
 
       // map the index routes
       const index = _.find(routes, r => r.route === config.html);
-      const roots = [config.root, `${config.root}/*`];
+      const roots = [config.root, `${config.root}*`];
 
       if (!index) {
         logWarning('No index html file found. Root route will not display.');
