@@ -1,16 +1,14 @@
 import _ from 'lodash';
 import glob from 'glob';
 import path from 'path';
+import { logWarning } from 'node-bits';
 
 // configuration
-const defaultOptions = {
-  root: '/',
-  html: '/index.html',
-};
-
 const compileConfiguration = (options = {}, bitsConfig) => {
   return {
-    ...defaultOptions,
+    root: '/',
+    html: '/index.html',
+
     ...options,
     ...bitsConfig,
   };
@@ -41,12 +39,15 @@ export default (options) => {
       const files = glob.sync(path.join(config.path, '**/*.*'));
       const routes = files.map((filePath) => defineRoute(config.path, filePath));
 
-      // map the index route
+      // map the index routes
       const index = _.find(routes, r => r.route === config.html);
-      routes.push({
-        ...index,
-        route: config.root,
-      });
+      const roots = [config.root, `${config.root}/*`];
+
+      if (!index) {
+        logWarning('No index html file found. Root route will not display.');
+      }
+
+      _.forEach(roots, (root) => { routes.push({ ...index, route: root }); });
 
       // return
       return routes;

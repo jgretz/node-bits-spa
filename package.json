@@ -20,7 +20,8 @@
   "homepage": "https://github.com/jgretz/node-bits-spa#readme",
   "dependencies": {
     "glob": "^7.0.6",
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.4",
+    "node-bits": "^0.0.13"
   },
   "devDependencies": {
     "babel-cli": "^6.22.2",
