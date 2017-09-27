@@ -44,6 +44,7 @@ export default options =>
 
       if (!index) {
         logWarning('No index html file found. Root route will not display.');
+        logWarning(`Path passed to node-bits-spa config: ${config.path}`);
       }
 
       _.forEach(roots, root => {
